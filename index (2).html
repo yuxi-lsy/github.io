@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>velive.ai — Train once, answer forever.</title>
+<meta name="description" content="Create your AI clone in 5 minutes. It speaks like you, knows what you know, and talks to people when you can't.">
+<meta property="og:title" content="velive.ai — You, but always live.">
+<meta property="og:description" content="Create your AI clone in 5 minutes. It speaks like you, knows what you know, and talks to people when you can't.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://velive.ai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08080a;
+  --bg-card: #111114;
+  --bg-card-hover: #18181c;
+  --text: #e8e6e1;
+  --text-secondary: #8a8880;
+  --accent: #c4a1ff;
+  --accent-glow: rgba(196, 161, 255, 0.15);
+  --accent-dim: #9b7fd4;
+  --border: rgba(255, 255, 255, 0.06);
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ GRAIN OVERLAY ═══ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ═══ AMBIENT GLOW ═══ */
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(196, 161, 255, 0.07), transparent 70%);
+  top: -200px; right: -100px;
+}
+.glow-orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(120, 200, 255, 0.04), transparent 70%);
+  bottom: -100px; left: -150px;
+}
+
+/* ═══ NAV ═══ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 20px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 100;
+  background: rgba(8, 8, 10, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--accent); }
+.nav-cta {
+  padding: 10px 24px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.nav-cta:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(196, 161, 255, 0.15);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 40px;
+  animation: fadeInUp 0.8s ease-out both;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  max-width: 800px;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-secondary);
+  max-width: 540px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  font-weight: 300;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 36px;
+  background: var(--accent);
+  color: #0a0a0c;
+  border: none;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+.hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(196, 161, 255, 0.3);
+}
+.hero-cta svg { transition: transform 0.3s; }
+.hero-cta:hover svg { transform: translateX(3px); }
+
+.hero-note {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+/* ═══ DIVIDER ═══ */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* ═══ HOW IT WORKS ═══ */
+.how {
+  padding: 120px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.section-label {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 20px;
+}
+.how h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: -1px;
+  margin-bottom: 64px;
+  line-height: 1.15;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.step {
+  padding: 36px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+.step::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.step:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(196, 161, 255, 0.1);
+  transform: translateY(-4px);
+}
+.step:hover::before { opacity: 1; }
+
+.step-num {
+  font-family: var(--font-display);
+  font-size: 48px;
+  color: rgba(196, 161, 255, 0.15);
+  margin-bottom: 20px;
+  line-height: 1;
+}
+.step h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.step p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ═══ USE CASES ═══ */
+.usecases {
+  padding: 120px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.usecases h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: -1px;
+  margin-bottom: 64px;
+  line-height: 1.15;
+}
+
+.cases {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.case {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.3s;
+}
+.case:hover {
+  border-color: rgba(196, 161, 255, 0.12);
+  background: var(--bg-card);
+}
+.case-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+  width: 48px; height: 48px;
+  background: var(--accent-glow);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.case h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.case p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ═══ CTA SECTION ═══ */
+.cta-section {
+  padding: 120px 24px;
+  text-align: center;
+}
+.cta-box {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 48px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 20%; right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.cta-box h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 400;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.cta-box p {
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  font-weight: 300;
+  font-size: 16px;
+}
+.cta-privacy {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  padding: 40px 24px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+footer p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+footer a:hover { color: var(--accent); }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .logo { font-size: 20px; }
+  .steps { grid-template-columns: 1fr; }
+  .cases { grid-template-columns: 1fr; }
+  .hero { padding: 100px 20px 60px; }
+  .cta-box { padding: 48px 28px; }
+  h1 { letter-spacing: -1px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Ambient glow -->
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="/" class="logo">velive<span>.ai</span></a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLScA51qzlTD6yaYVJ-qL4TwGd_YOLRD_IsCz_KmD1Jv4mA3exQ/viewform" target="_blank" class="nav-cta">Get early access</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">Coming soon</div>
+  <h1>Train once,<br>answer <em>forever.</em></h1>
+  <p class="hero-sub">Create your AI clone in 5 minutes. It speaks like you, knows what you know, and talks to people when you can't.</p>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLScA51qzlTD6yaYVJ-qL4TwGd_YOLRD_IsCz_KmD1Jv4mA3exQ/viewform" target="_blank" class="hero-cta">
+    Get early access
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+  <p class="hero-note">Free to start. No credit card required.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- How it works -->
+<section class="how">
+  <p class="section-label reveal">How it works</p>
+  <h2 class="reveal">Three steps to clone yourself.</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <h3>Tell it who you are</h3>
+      <p>Paste your bio, articles, FAQ, expertise — anything that makes you, you. Your clone learns your voice and knowledge instantly.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <h3>Get your link & embed code</h3>
+      <p>Share a direct link or add one line of code to your website. Your clone appears as a chat widget, ready to talk.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <h3>You, but always online</h3>
+      <p>Your clone answers questions in your voice, 24/7. While you sleep, it's talking to your fans, clients, and students.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Use cases -->
+<section class="usecases">
+  <p class="section-label reveal">Who is it for</p>
+  <h2 class="reveal">Your clone. Their questions.<br>Your answers.</h2>
+  <div class="cases">
+    <div class="case reveal">
+      <div class="case-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4a1ff" stroke-width="1.5"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+      </div>
+      <h3>Creators</h3>
+      <p>Your fans can chat with you, even when you're asleep. Answer the same "what camera do you use?" a thousand times — without lifting a finger.</p>
+    </div>
+    <div class="case reveal">
+      <div class="case-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4a1ff" stroke-width="1.5"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+      </div>
+      <h3>Developers</h3>
+      <p>Let your clone handle the repeated questions about your open source project. Embed it in your docs and README.</p>
+    </div>
+    <div class="case reveal">
+      <div class="case-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4a1ff" stroke-width="1.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+      </div>
+      <h3>Coaches & Experts</h3>
+      <p>Scale your knowledge without scaling your time. Your clone gives personalized advice based on your real experience.</p>
+    </div>
+    <div class="case reveal">
+      <div class="case-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4a1ff" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+      </div>
+      <h3>Anyone curious</h3>
+      <p>What would an AI version of you say? Create your clone, share the link, and find out what your friends think.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section" id="early-access">
+  <div class="cta-box reveal">
+    <h2>Be the first to clone yourself.</h2>
+    <p>Join the waitlist. We'll notify you when velive.ai is ready.</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScA51qzlTD6yaYVJ-qL4TwGd_YOLRD_IsCz_KmD1Jv4mA3exQ/viewform" target="_blank" class="hero-cta" style="margin-top:8px;">
+      Join waitlist — takes 5 seconds
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <p class="cta-privacy">Just your email. No spam.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 velive.ai &mdash; You, but always live. &nbsp;·&nbsp; <a href="https://twitter.com" target="_blank">Twitter</a></p>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
